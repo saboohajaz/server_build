@@ -1,0 +1,2 @@
+source "$BR2_EXTERNAL_PORTAL_PATH/package/loragateway/Config.in"
+

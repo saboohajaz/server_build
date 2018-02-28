@@ -1,0 +1,7 @@
+menuconfig BR2_PACKAGE_LORAGATEWAY
+	bool "Lora Gateway"
+	default y
+	help
+		General Hardware Abstraction Layer for chip and SPI features
+
+
