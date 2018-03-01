@@ -1,7 +1,9 @@
 # buildroot_portal
 This repositor has setup to create bootable image for Fleet Portal
 
+
 Setup requies following steps:
+
 (1) Make a clone of buildroot repo.
 
       git clone <buildroot repo>
