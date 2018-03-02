@@ -11,6 +11,7 @@ LORAGATEWAY_SITE_INSTALL_STAGING = YES
 # Build the source
 define LORAGATEWAY_BUILD_CMDS
 	make CROSS_COMPILE=$(TARGET_CROSS) ARCH=armv7l DEBUG_AUX=1 DEBUG_SPI=1 DEBUG_REG=1 -C $(@D)
+	cd $(@D)/.. && ln -s $(@D) lora_gateway
 endef
 
 # Install the application into the rootfs file system

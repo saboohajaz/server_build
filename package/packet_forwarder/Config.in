@@ -1,0 +1,8 @@
+menuconfig BR2_PACKAGE_PACKET_FORWARDER
+	bool "Packet Forwarder"
+	default y
+	select BR2_PACKAGE_LORAGATEWAY
+	help
+		Packet Forwarder
+
+
