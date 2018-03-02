@@ -18,6 +18,10 @@ endef
 define PACKET_FORWARDER_INSTALL_TARGET_CMDS
 	mkdir -p $(TARGET_DIR)/usr/bin/packet_forwarder/ 
 	cp -R $(@D)/* $(TARGET_DIR)/usr/bin/packet_forwarder/
+	$(INSTALL) -D -m 0755 -b $(BR2_EXTERNAL_PORTAL_PATH)/package/packet_forwarder/global_conf.json.AUS \
+		$(TARGET_DIR)/usr/bin/packet_forwarder/lora_pkt_fwd/cfg/global_conf.json.AUS
+	$(INSTALL) -D -m 0755 -b $(BR2_EXTERNAL_PORTAL_PATH)/package/packet_forwarder/global_conf.json.AUS \
+		$(TARGET_DIR)/usr/bin/packet_forwarder/lora_pkt_fwd/global_conf.json
 endef
 
 $(eval $(generic-package))

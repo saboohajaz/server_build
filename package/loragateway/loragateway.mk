@@ -9,8 +9,9 @@ LORAGATEWAY_SITE = https://github.com/Lora-net/lora_gateway/archive/v$(LORAGATEW
 LORAGATEWAY_SITE_INSTALL_STAGING = YES
 
 # Build the source
+# Add flags to enable DEBUGs : DEBUG_AUX=1 DEBUG_SPI=1 DEBUG_REG=1 
 define LORAGATEWAY_BUILD_CMDS
-	make CROSS_COMPILE=$(TARGET_CROSS) ARCH=armv7l DEBUG_AUX=1 DEBUG_SPI=1 DEBUG_REG=1 -C $(@D)
+	make CROSS_COMPILE=$(TARGET_CROSS) ARCH=armv7l -C $(@D)
 	cd $(@D)/.. && ln -s $(@D) lora_gateway
 endef
 
