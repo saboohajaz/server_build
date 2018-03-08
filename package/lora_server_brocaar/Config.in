@@ -1,0 +1,12 @@
+menuconfig BR2_PACKAGE_LORA_SERVER_BROCAAR
+	bool "Lora Server Brocaar"
+	default y
+	select BR2_PACKAGE_MOSQUITTO
+	select BR2_PACKAGE_REDIS
+	select BR2_PACKAGE_POSTGRESQL
+	select BR2_PACKAGE_HOST_GO_FLEET_ARCH_SUPPORTS
+	select BR2_PACKAGE_HOST_GO_CGO_LINKING_SUPPORTS
+	help
+		Lora Server Brocaar
+
+
