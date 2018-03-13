@@ -1,0 +1,71 @@
+#!/bin/sh
+#
+# start portal services
+#
+
+startDatabase() {
+	echo "Starting Postgres Database: "
+	OUTPUT="$(sudo -u postgres psql -c "\du")"
+	reqsub='loraserver_as'
+	if [ -z "${OUTPUT##*$reqsub*}" ] ;then
+		echo "Role Exists: '$reqsub'."
+	else
+		echo "Role doesn't Exists: '$reqsub'. Adding ..."
+		sudo -u postgres psql -c "create role loraserver_as with login password 'dbpassword';"
+	fi
+	reqsub='loraserver_ns'
+	if [ -z "${OUTPUT##*$reqsub*}" ] ;then
+		echo "Role Exists: '$reqsub'."
+	else
+		echo "Role doesn't Exists: '$reqsub'. Adding ..."
+		sudo -u postgres psql -c "create role loraserver_ns with login password 'dbpassword';"
+	fi
+
+	OUTPUT="$(sudo -u postgres psql -c "\l")"
+	reqsub='loraserver_as'
+	if [ -z "${OUTPUT##*$reqsub*}" ] ;then
+		echo "Database Exists: '$reqsub'."
+	else
+		echo "Database doesn't Exists: '$reqsub'. Adding ..."
+		sudo -u postgres psql -c "create database loraserver_as with owner loraserver_as;"
+	fi
+	reqsub='loraserver_ns'
+	if [ -z "${OUTPUT##*$reqsub*}" ] ;then
+		echo "Database Exists: '$reqsub'."
+	else
+		echo "Database doesn't Exists: '$reqsub'. Adding ..."
+		sudo -u postgres psql -c "create database loraserver_ns with owner loraserver_ns;"
+	fi
+
+	echo "Database Setup Done"
+}
+start() {
+	echo "Starting Portal Services: "
+	startDatabase
+	echo "Started Portal Services"
+}
+stop() {
+	printf "Stopping Portal Services: "
+	echo "OK"
+}
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart|reload)
+		restart
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit $?
