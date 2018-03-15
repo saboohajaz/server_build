@@ -1,2 +1,5 @@
 fleet -1 users -1 =Fleet123 /home/fleet /bin/sh -
+gatewaybridge -1 gatewaybridge -1 = - /bin/false -
+loraserver -1 loraserver -1 = - /bin/false -
+appserver -1 appserver -1 = - /bin/false -
 

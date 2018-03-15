@@ -55,10 +55,17 @@ start() {
 	startDatabase
 	echo "Certificates: "
 	certificateHandling
+	echo "Portal services: "
+	/usr/sbin/loraServer/loraServerInit lora-gateway-bridge start
+	/usr/sbin/loraServer/loraServerInit loraserver start
+	/usr/sbin/loraServer/loraServerInit lora-app-server start
 	echo "Started Portal Services"
 }
 stop() {
-	printf "Stopping Portal Services: "
+	echo "Stopping Portal Services: "
+	/usr/sbin/loraServer/loraServerInit lora-gateway-bridge stop
+	/usr/sbin/loraServer/loraServerInit loraserver stop
+	/usr/sbin/loraServer/loraServerInit lora-app-server stop
 	echo "OK"
 }
 restart() {

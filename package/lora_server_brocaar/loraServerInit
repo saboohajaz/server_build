@@ -1,0 +1,40 @@
+NAME=$1
+DAEMON=/usr/bin/$NAME
+PID_FILE=/var/run/$NAME.pid
+
+case "$2" in
+    start)
+        echo "Starting ${NAME}: "
+        mkdir -p /var/log/$NAME
+        start-stop-daemon -S -q -m -b -p ${PID_FILE} -C -x  $DAEMON > /var/log/$NAME/$NAME.log 2>&1
+        rc=$?
+        if [ $rc -eq 0 ]
+        then
+            echo "OK"
+        else
+            echo "FAIL" >&2
+        fi
+        ;;
+    stop)
+        echo "Stopping ${NAME}: "
+        start-stop-daemon -K -q -p ${PID_FILE}
+        rc=$?
+        if [ $rc -eq 0 ]
+        then
+            echo "OK"
+        else
+            echo "FAIL" >&2
+        fi
+        ;;
+    restart)
+        "$0" stop
+        "$0" start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        ;;
+esac
+
+exit $rc
+
+

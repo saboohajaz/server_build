@@ -62,33 +62,25 @@ endef
 define LORA_SERVER_BROCAAR_INSTALL_TARGET_CMDS
 	$(INSTALL) -D -m 0755 $(@D)/src/github.com/brocaar/lora-gateway-bridge/build/lora-gateway-bridge \
 		$(TARGET_DIR)/usr/bin/lora-gateway-bridge
-	$(INSTALL) -D -m 0755 $(@D)/src/github.com/brocaar/lora-gateway-bridge/packaging/deb/init.sh \
-		$(TARGET_DIR)/usr/lib/lora-gateway-bridge/scripts/init.sh
-	$(INSTALL) -D -m 0755 $(@D)/src/github.com/brocaar/lora-gateway-bridge/packaging/deb/lora-gateway-bridge.service \
-		$(TARGET_DIR)/usr/lib/lora-gateway-bridge/scripts/lora-gateway-bridge.service
-	$(INSTALL) -D -m 0755 $(@D)/src/github.com/brocaar/lora-gateway-bridge/packaging/deb/logrotate \
-		$(TARGET_DIR)/etc/logrotate.d/lora-gateway-bridge
+	$(INSTALL) -D -m 0755 $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/lora-gateway-bridge.toml \
+		$(TARGET_DIR)/etc/lora-gateway-bridge/lora-gateway-bridge.toml
+
 	$(INSTALL) -D -m 0755 $(@D)/src/github.com/brocaar/loraserver/build/loraserver \
 		$(TARGET_DIR)/usr/bin/loraserver
-	$(INSTALL) -D -m 0755 $(@D)/src/github.com/brocaar/loraserver/packaging/deb/init.sh \
-		$(TARGET_DIR)/usr/lib/loraserver/scripts/init.sh
-	$(INSTALL) -D -m 0755 $(@D)/src/github.com/brocaar/loraserver/packaging/deb/loraserver.service \
-		$(TARGET_DIR)/usr/lib/loraserver/scripts/loraserver.service
-	$(INSTALL) -D -m 0755 $(@D)/src/github.com/brocaar/loraserver/packaging/deb/logrotate \
-		$(TARGET_DIR)/etc/logrotate.d/loraserver
+	$(INSTALL) -D -m 0755 $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/loraserver.toml \
+		$(TARGET_DIR)/etc/loraserver/loraserver.toml
+
 	$(INSTALL) -D -m 0755 $(@D)/src/github.com/brocaar/lora-app-server/build/lora-app-server \
 		$(TARGET_DIR)/usr/bin/lora-app-server
-	$(INSTALL) -D -m 0755 $(@D)/src/github.com/brocaar/lora-app-server/packaging/deb/init.sh \
-		$(TARGET_DIR)/usr/lib/lora-app-server/scripts/init.sh
-	$(INSTALL) -D -m 0755 $(@D)/src/github.com/brocaar/lora-app-server/packaging/deb/lora-app-server.service \
-		$(TARGET_DIR)/usr/lib/lora-app-server/scripts/lora-app-server.service
-	$(INSTALL) -D -m 0755 $(@D)/src/github.com/brocaar/lora-app-server/packaging/deb/logrotate \
-		$(TARGET_DIR)/etc/logrotate.d/lora-app-server
+	$(INSTALL) -D -m 0755 $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/lora-app-server.toml \
+		$(TARGET_DIR)/etc/lora-app-server/lora-app-server.toml
 endef
 
 define LORA_SERVER_BROCAAR_INSTALL_INIT_SYSV
 	$(INSTALL) -D -m 0755 $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/loraServer \
 		$(TARGET_DIR)/etc/init.d/S70loraServer
+	$(INSTALL) -D -m 0755 $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/loraServerInit \
+		$(TARGET_DIR)/usr/sbin/loraServer/loraServerInit
 endef
 
 
