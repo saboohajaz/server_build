@@ -3,6 +3,17 @@
 # start portal services
 #
 
+NAME=lora-app-server
+
+certificateHandling() {
+	echo "Certificate handler: "
+	if [[ ! -r /etc/$NAME/certs/http-key.pem ]] && [[ ! -r /etc/$NAME/certs/http.pem ]]; then
+		mkdir -p /etc/$NAME/certs
+		openssl req -x509 -newkey rsa:4096 -keyout /etc/$NAME/certs/http-key.pem -out /etc/$NAME/certs/http.pem -days 365 -nodes -batch -subj "/CN=localhost"
+		echo "A self-signed TLS certificate has been generated : /etc/$NAME/certs"
+	fi
+}
+
 startDatabase() {
 	echo "Starting Postgres Database: "
 	OUTPUT="$(sudo -u postgres psql -c "\du")"
@@ -42,6 +53,8 @@ startDatabase() {
 start() {
 	echo "Starting Portal Services: "
 	startDatabase
+	echo "Certificates: "
+	certificateHandling
 	echo "Started Portal Services"
 }
 stop() {
