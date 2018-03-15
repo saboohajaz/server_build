@@ -86,4 +86,10 @@ define LORA_SERVER_BROCAAR_INSTALL_TARGET_CMDS
 		$(TARGET_DIR)/etc/logrotate.d/lora-app-server
 endef
 
+define LORA_SERVER_BROCAAR_INSTALL_INIT_SYSV
+	$(INSTALL) -D -m 0755 $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/loraServer \
+		$(TARGET_DIR)/etc/init.d/S70loraServer
+endef
+
+
 $(eval $(generic-package))
