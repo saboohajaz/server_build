@@ -60,7 +60,7 @@ start() {
 	mkdir -p /var/log/lora_pkt_fwd
 	/usr/bin/lora_gateway/reset_lgw.sh start 17
 	/usr/bin/lora_gateway/libloragw/test_loragw_reg > /var/log/lora_gateway/lora_gateway
-	start-stop-daemon -S -q -m -b -p /var/run/lora_pkt_fwd.pid -C -x  /usr/bin/packet_forwarder/lora_pkt_fwd/lora_pkt_fwd > /var/log/lora_pkt_fwd/lora_pkt_fwd.log 2>&1
+	cd /usr/bin/packet_forwarder/lora_pkt_fwd && ./lora_pkt_fwd > /var/log/lora_pkt_fwd/lora_pkt_fwd.log 2>&1 &
 	/usr/sbin/loraServer/loraServerInit lora-gateway-bridge start
 	/usr/sbin/loraServer/loraServerInit loraserver start
 	/usr/sbin/loraServer/loraServerInit lora-app-server start
@@ -68,7 +68,6 @@ start() {
 }
 stop() {
 	echo "Stopping Portal Services: "
-	start-stop-daemon -K -q -p /var/run/lora_pkt_fwd.pid
 	/usr/sbin/loraServer/loraServerInit lora-gateway-bridge stop
 	/usr/sbin/loraServer/loraServerInit loraserver stop
 	/usr/sbin/loraServer/loraServerInit lora-app-server stop
