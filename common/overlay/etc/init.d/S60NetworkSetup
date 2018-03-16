@@ -6,7 +6,7 @@
 
 # Check if eth0 running
 # Enable eth0 if not running
-OUTPUT="$(ifconfig | grep eth0)"
+OUTPUT="$(ifconfig)"
 reqsub='eth0'
 if [ -z "${OUTPUT##*$reqsub*}" ] ;then
 	echo "Network Interface already UP: '$reqsub'"
@@ -18,7 +18,6 @@ fi
 
 # Check if wlan0 running
 # Enable wlan0 if not running
-OUTPUT="$(ifconfig | grep wlan0)"
 KernelVersion="$(uname -r)"
 reqsub='wlan0'
 if [ -z "${OUTPUT##*$reqsub*}" ] ;then
