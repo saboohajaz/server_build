@@ -1,0 +1,32 @@
+#!/bin/sh
+#
+# start network services
+#
+
+
+# Check if eth0 running
+# Enable eth0 if not running
+OUTPUT="$(ifconfig | grep eth0)"
+reqsub='eth0'
+if [ -z "${OUTPUT##*$reqsub*}" ] ;then
+	echo "Network Interface already UP: '$reqsub'"
+else
+	ifup eth0
+	echo "Network Interface UP: '$reqsub'"
+fi
+
+
+# Check if wlan0 running
+# Enable wlan0 if not running
+OUTPUT="$(ifconfig | grep wlan0)"
+KernelVersion="$(uname -r)"
+reqsub='wlan0'
+if [ -z "${OUTPUT##*$reqsub*}" ] ;then
+	echo "Network Interface already UP: '$reqsub'"
+else
+	cd /lib/modules/$KernelVersion/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac && modprobe brcmfmac.ko
+	sleep 1
+	ifup wlan0
+	echo "Network Interface UP: '$reqsub'"
+fi
+
