@@ -60,7 +60,18 @@ start() {
 	mkdir -p /var/log/lora_pkt_fwd
 	/usr/bin/lora_gateway/reset_lgw.sh start 17
 	/usr/bin/lora_gateway/libloragw/test_loragw_reg > /var/log/lora_gateway/lora_gateway
-	cd /usr/bin/packet_forwarder/lora_pkt_fwd && ./lora_pkt_fwd > /var/log/lora_pkt_fwd/lora_pkt_fwd.log 2>&1 &
+	OUTPUT="$(ps | grep lora_pkt_fwd)"
+	reqsub='./lora_pkt_fwd'
+	i="0"
+	while [ -n "${OUTPUT##*$reqsub*}" ] && [  $i -lt 10 ]
+	do
+		echo "$i  Process not running: '$reqsub'. Starting ..."
+		cd /usr/bin/packet_forwarder/lora_pkt_fwd && ./lora_pkt_fwd > /var/log/lora_pkt_fwd/lora_pkt_fwd.log 2>&1 &
+		let i=i+1
+		sleep 1
+		OUTPUT="$(ps | grep lora_pkt_fwd)"
+	done
+
 	/usr/sbin/loraServer/loraServerInit lora-gateway-bridge start
 	/usr/sbin/loraServer/loraServerInit loraserver start
 	/usr/sbin/loraServer/loraServerInit lora-app-server start
