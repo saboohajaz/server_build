@@ -18,16 +18,21 @@ define LORA_SERVER_BROCAAR_BUILD_CMDS
 	cp $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/Makefile \
 		$(@D)/src/github.com/brocaar/lora-app-server/Makefile
 	@cd $(@D)/src/github.com/brocaar/lora-app-server/ui && $(NPM) install
-	@cd $(@D)/src/github.com/brocaar/lora-app-server/ui && $(NPM) run build
+
 	@echo "Brocaar Lora App Server : building requirements"
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make ui-requirements -C \
-		$(@D)/src/github.com/brocaar/lora-app-server/
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make requirements -C \
-		$(@D)/src/github.com/brocaar/lora-app-server/
+	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make requirements \
+		ui-requirements -C $(@D)/src/github.com/brocaar/lora-app-server/
+	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make clean \
+		-C $(@D)/src/github.com/brocaar/lora-app-server/
+	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make api \
+		-C $(@D)/src/github.com/brocaar/lora-app-server/
+	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make test \
+		-C $(@D)/src/github.com/brocaar/lora-app-server/
+	@cd $(@D)/src/github.com/brocaar/lora-app-server/ui && $(NPM) run build
 
 	@echo "Brocaar Lora App Server : building executable"
 	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin/linux_arm:$(@D)/bin \
-		GOOS=linux GOARCH=arm make build -C $(@D)/src/github.com/brocaar/lora-app-server/
+		GOOS=linux GOARCH=arm make -B build -C $(@D)/src/github.com/brocaar/lora-app-server/
 
 	@echo "Brocaar Lora App Server : done"
 

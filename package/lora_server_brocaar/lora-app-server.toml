@@ -39,7 +39,11 @@ password_hash_iterations=100000
 # * require - Always SSL (skip verification)
 # * verify-ca - Always SSL (verify that the certificate presented by the server was signed by a trusted CA)
 # * verify-full - Always SSL (verify that the certification presented by the server was signed by a trusted CA and the server host name matches the one in the certificate)
+#dsn="postgres://localhost/loraserver_as?sslmode=disable"
+
 dsn="postgres://loraserver_as:dbpassword@localhost/loraserver_as?sslmode=disable"
+
+
 
 # Automatically apply database migrations.
 #
@@ -77,6 +81,23 @@ id="6d5db27e-4ce2-4b2b-b5d7-91f069397978"
   # Next to this integration which is always available, the user is able to
   # configure additional per-application integrations.
   [application_server.integration.mqtt]
+  # MQTT topic templates for the different MQTT topics.
+  #
+  # The meaning of these topics are documented at:
+  # https://docs.loraserver.io/lora-app-server/integrate/data/
+  #
+  # The following substitutions can be used:
+  # * "{{ .ApplicationID }}" for the application id.
+  # * "{{ .DevEUI }}" for the DevEUI of the device.
+  #
+  # Note: the downlink_topic_template must contain both the application id and
+  # DevEUI substitution!
+  uplink_topic_template="application/{{ .ApplicationID }}/node/{{ .DevEUI }}/rx"
+  downlink_topic_template="application/{{ .ApplicationID }}/node/{{ .DevEUI }}/tx"
+  join_topic_template="application/{{ .ApplicationID }}/node/{{ .DevEUI }}/join"
+  ack_topic_template="application/{{ .ApplicationID }}/node/{{ .DevEUI }}/ack"
+  error_topic_template="application/{{ .ApplicationID }}/node/{{ .DevEUI }}/error"
+
   # MQTT server (e.g. scheme://host:port where scheme is tcp, ssl or ws)
   server="tcp://localhost:1883"
 
@@ -85,6 +106,30 @@ id="6d5db27e-4ce2-4b2b-b5d7-91f069397978"
 
   # Connect with the given password (optional)
   password=""
+
+  # Quality of service level
+  #
+  # 0: at most once
+  # 1: at least once
+  # 2: exactly once
+  #
+  # Note: an increase of this value will decrease the performance.
+  # For more information: https://www.hivemq.com/blog/mqtt-essentials-part-6-mqtt-quality-of-service-levels
+  qos=0
+
+  # Clean session
+  #
+  # Set the "clean session" flag in the connect message when this client
+  # connects to an MQTT broker. By setting this flag you are indicating
+  # that no messages saved by the broker for this client should be delivered.
+  clean_session=true
+
+  # Client ID
+  #
+  # Set the client id to be used by this client when connecting to the MQTT
+  # broker. A client id must be no longer than 23 characters. When left blank,
+  # a random id will be generated. This requires clean_session=true.
+  client_id=""
 
   # CA certificate file (optional)
   #
@@ -147,24 +192,6 @@ id="6d5db27e-4ce2-4b2b-b5d7-91f069397978"
   # when set, existing users can't be re-assigned (to avoid exposure of all users to an organization admin)"
   disable_assign_existing_users=false
 
-
-  # Gateway discovery configuration.
-  #
-  # When enabled, each gateway will periodically broadcast a discovery "ping"
-  # which other gateways in the network are able to receive and which is
-  # presented in the web-interface as a map.
-  [application_server.gateway_discovery]
-  # Enable the gateway discovery feature.
-  enabled=false
-
-  # the interval used for each gateway to send a ping
-  interval="24h0m0s"
-
-  # the frequency used for transmitting the gateway ping (in Hz)
-  frequency=868100000
-
-  # the data-rate to use for transmitting the gateway ping
-  dr=5
 
 
 # Join-server configuration.

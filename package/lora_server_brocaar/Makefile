@@ -21,7 +21,7 @@ test: internal/statics internal/migrations
 		golint $$pkg ; \
 	done
 	@go vet $(PKGS)
-	@go test -p 1 -v $(PKGS)
+	# @go test -p 1 -v $(PKGS)
 
 documentation:
 	@echo "Building documentation"

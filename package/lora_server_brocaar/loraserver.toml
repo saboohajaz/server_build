@@ -35,6 +35,7 @@ log_level=4
 # * require - Always SSL (skip verification)
 # * verify-ca - Always SSL (verify that the certificate presented by the server was signed by a trusted CA)
 # * verify-full - Always SSL (verify that the certification presented by the server was signed by a trusted CA and the server host name matches the one in the certificate)
+#dsn="postgres://localhost/loraserver_ns?sslmode=disable"
 dsn="postgres://loraserver_ns:dbpassword@localhost/loraserver_ns?sslmode=disable"
 
 # Automatically apply database migrations.
@@ -109,8 +110,12 @@ get_downlink_data_delay="100ms"
   # * EU_863_870
   # * IN_865_867
   # * KR_920_923
-  # * US_902_928),
-  name="AU_915_928"
+  # * RU_864_870
+  # * US_902_928
+ # name="EU_863_870"
+name="AU_915_928"
+
+
 
   # Enforce 400ms dwell time
   #
@@ -289,6 +294,7 @@ get_downlink_data_delay="100ms"
   # When left empty, no statistics will be stored in the database.
   # Note, LoRa App Server expects at least "minute", "day", "hour"!
   aggregation_intervals=["minute", "hour", "day"]
+#aggregation_intervals=["minute", "hour", "day"]
 
 
   # MQTT gateway backend settings.
@@ -317,6 +323,30 @@ get_downlink_data_delay="100ms"
 
   # Connect with the given password (optional)
   password=""
+
+  # Quality of service level
+  #
+  # 0: at most once
+  # 1: at least once
+  # 2: exactly once
+  #
+  # Note: an increase of this value will decrease the performance.
+  # For more information: https://www.hivemq.com/blog/mqtt-essentials-part-6-mqtt-quality-of-service-levels
+  qos=0
+
+  # Clean session
+  #
+  # Set the "clean session" flag in the connect message when this client
+  # connects to an MQTT broker. By setting this flag you are indicating
+  # that no messages saved by the broker for this client should be delivered.
+  clean_session=true
+
+  # Client ID
+  #
+  # Set the client id to be used by this client when connecting to the MQTT
+  # broker. A client id must be no longer than 23 characters. When left blank,
+  # a random id will be generated. This requires clean_session=true.
+  client_id=""
 
   # CA certificate file (optional)
   #
@@ -350,7 +380,7 @@ tls_key=""
 
 
 # Network-controller configuration.
-[network_contoller]
+[network_controller]
 # hostname:port of the network-controller api server (optional)
 server=""
 
