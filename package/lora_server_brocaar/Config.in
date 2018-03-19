@@ -7,7 +7,17 @@ menuconfig BR2_PACKAGE_LORA_SERVER_BROCAAR
 	select BR2_PACKAGE_NODEJS
 	select BR2_PACKAGE_HOST_GO_FLEET_ARCH_SUPPORTS
 	select BR2_PACKAGE_HOST_GO_CGO_LINKING_SUPPORTS
+	select BR2_PACKAGE_PACKET_FORWARDER
 	help
 		Lora Server Brocaar
 
+if BR2_PACKAGE_LORA_SERVER_BROCAAR
+	config BR2_LORA_SERVER_BROCAAR_INIT_LVL
+		int "Start script Run Level for Setup & Daemons creation"
+		default 71
+		range 10 99
+		depends on BR2_PACKAGE_LORA_SERVER_BROCAAR
+		help
+			The initialization priority level of LoRa Server daemons
+endif
 

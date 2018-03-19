@@ -83,7 +83,7 @@ endef
 
 define LORA_SERVER_BROCAAR_INSTALL_INIT_SYSV
 	$(INSTALL) -D -m 0755 $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/loraServer \
-		$(TARGET_DIR)/etc/init.d/S70loraServer
+		$(TARGET_DIR)/etc/init.d/S$(BR2_LORA_SERVER_BROCAAR_INIT_LVL)loraServer
 	$(INSTALL) -D -m 0755 $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/loraServerInit \
 		$(TARGET_DIR)/usr/sbin/loraServer/loraServerInit
 endef
