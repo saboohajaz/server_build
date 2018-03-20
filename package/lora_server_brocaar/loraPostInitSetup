@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+# Portal : Post start setup
+#
+
+NAME=lora-app-server
+
+setupDatabase() {
+	# check if network server added
+	# Add if not added
+	OUTPUT="$(sudo -u postgres psql -d loraserver_as -c "\dt")"
+	reqsub='network_server'
+	i="0"
+	while [ -n "${OUTPUT##*$reqsub*}" ] && [  $i -lt 20 ]
+	do
+		echo "DataBase initialization not complete yet"
+		let i=i+1
+		sleep 2
+		OUTPUT="$(sudo -u postgres psql -d loraserver_as -c "\dt")"
+	done
+
+	OUTPUT="$(sudo -u postgres psql -d loraserver_as -c "select server from network_server")"
+	reqsub='localhost:8000'
+	i="0"
+	while [ -n "${OUTPUT##*$reqsub*}" ] && [  $i -lt 20 ]
+	do
+		echo "Network Server doesn't Exists: '$reqsub'. Adding ..."
+		sudo -u postgres psql -d loraserver_as -c "INSERT INTO network_server (created_at, updated_at,name, server) VALUES (current_timestamp, current_timestamp, 'FleetSpace0001', 'localhost:8000')"
+		let i=i+1
+		sleep 2
+	OUTPUT="$(sudo -u postgres psql -d loraserver_as -c "select server from network_server")"
+	done
+}
+
+start() {
+	setupDatabase
+}
+
+stop() {
+	echo "Stopping"
+}
+
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart|reload)
+		restart
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit $?
