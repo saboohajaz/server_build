@@ -10,6 +10,7 @@ LORA_SERVER_BROCAAR_DEPENDENCIES += redis
 LORA_SERVER_BROCAAR_DEPENDENCIES += postgresql
 LORA_SERVER_BROCAAR_DEPENDENCIES += host-go_fleet
 LORA_SERVER_BROCAAR_DEPENDENCIES += host-nodejs
+LORA_SERVER_BROCAAR_DEPENDENCIES += host-protobuf
 
 LORA_SERVER_BROCAAR_NET_SERV_VER = 0.25.1
 LORA_SERVER_BROCAAR_APP_SERV_VER = 0.18.2
@@ -26,6 +27,7 @@ LORA_SERVER_BROCAAR_SNS = src/$(LORA_SERVER_BROCAAR_NS)
 LORA_SERVER_BROCAAR_SAS = src/$(LORA_SERVER_BROCAAR_AS)
 LORA_SERVER_BROCAAR_SBS = src/$(LORA_SERVER_BROCAAR_BS)
 LORA_SERVER_BROCAAR_DR = $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar
+LORA_SERVER_BROCAAR_PTH = $(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin:$(HOST_DIR)/usr/bin:$(@D)/bin/linux_arm
 
 # Build the source
 define LORA_SERVER_BROCAAR_BUILD_CMDS
@@ -36,14 +38,14 @@ define LORA_SERVER_BROCAAR_BUILD_CMDS
 	@cd $(@D)/$(LORA_SERVER_BROCAAR_SAS)/ui && $(NPM) install
 
 	@echo "Brocaar Lora App Server : building requirements"
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make requirements ui-requirements -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make clean -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make api -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make test -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
+	GOPATH=$(@D) PATH=$(LORA_SERVER_BROCAAR_PTH) make requirements ui-requirements -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
+	GOPATH=$(@D) PATH=$(LORA_SERVER_BROCAAR_PTH) make clean -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
+	GOPATH=$(@D) PATH=$(LORA_SERVER_BROCAAR_PTH) make api -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
+	GOPATH=$(@D) PATH=$(LORA_SERVER_BROCAAR_PTH) make test -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
 	@cd $(@D)/$(LORA_SERVER_BROCAAR_SAS)/ui && $(NPM) run build
 
 	@echo "Brocaar Lora App Server : building executable"
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin/linux_arm:$(@D)/bin GOOS=linux GOARCH=arm make -B build -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
+	GOPATH=$(@D) PATH=$(LORA_SERVER_BROCAAR_PTH) GOOS=linux GOARCH=arm make -B build -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
 
 	@echo "Brocaar Lora App Server : done"
 
@@ -52,10 +54,10 @@ define LORA_SERVER_BROCAAR_BUILD_CMDS
 	cd $(@D)/$(LORA_SERVER_BROCAAR_SBS) && git checkout tags/$(LORA_SERVER_BROCAAR_BRD_SERV_VER)
 
 	@echo "Brocaar Lora Gateway Bridge : building requirements"
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make requirements -C $(@D)/$(LORA_SERVER_BROCAAR_SBS)/
+	GOPATH=$(@D) PATH=$(LORA_SERVER_BROCAAR_PTH) make requirements -C $(@D)/$(LORA_SERVER_BROCAAR_SBS)/
 
 	@echo "Brocaar Lora Gateway Bridge : building executable"
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin/linux_arm:$(@D)/bin GOOS=linux GOARCH=arm make build -C $(@D)/$(LORA_SERVER_BROCAAR_SBS)/
+	GOPATH=$(@D) PATH=$(LORA_SERVER_BROCAAR_PTH) GOOS=linux GOARCH=arm make build -C $(@D)/$(LORA_SERVER_BROCAAR_SBS)/
 
 	@echo "Brocaar Lora Gateway Bridge : done"
 
@@ -64,10 +66,10 @@ define LORA_SERVER_BROCAAR_BUILD_CMDS
 	cd $(@D)/$(LORA_SERVER_BROCAAR_SNS) && git checkout tags/$(LORA_SERVER_BROCAAR_NET_SERV_VER)
 
 	@echo "Brocaar Lora Server : building requirements"
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make requirements -C $(@D)/$(LORA_SERVER_BROCAAR_SNS)/
+	GOPATH=$(@D) PATH=$(LORA_SERVER_BROCAAR_PTH) make requirements -C $(@D)/$(LORA_SERVER_BROCAAR_SNS)/
 
 	@echo "Brocaar Lora Server : building executable"
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin/linux_arm:$(@D)/bin GOOS=linux GOARCH=arm make build -C $(@D)/$(LORA_SERVER_BROCAAR_SNS)/
+	GOPATH=$(@D) PATH=$(LORA_SERVER_BROCAAR_PTH) GOOS=linux GOARCH=arm make build -C $(@D)/$(LORA_SERVER_BROCAAR_SNS)/
 
 	@echo "Brocaar Lora Server : done"
 endef
