@@ -11,90 +11,83 @@ LORA_SERVER_BROCAAR_DEPENDENCIES += postgresql
 LORA_SERVER_BROCAAR_DEPENDENCIES += host-go_fleet
 LORA_SERVER_BROCAAR_DEPENDENCIES += host-nodejs
 
-LORA_SERVER_BROCAAR_NETWORK_SERVER_VERSION = 0.25.1
-LORA_SERVER_BROCAAR_APP_SERVER_VERSION = 0.18.2
-LORA_SERVER_BROCAAR_BRIDGE_SERVER_VERSION = 2.3.2
+LORA_SERVER_BROCAAR_NET_SERV_VER = 0.25.1
+LORA_SERVER_BROCAAR_APP_SERV_VER = 0.18.2
+LORA_SERVER_BROCAAR_BRD_SERV_VER = 2.3.2
+
+LORA_SERVER_BROCAAR_GITHUB = github.com/brocaar
+LORA_SERVER_BROCAAR_N = loraserver
+LORA_SERVER_BROCAAR_A = lora-app-server
+LORA_SERVER_BROCAAR_B = lora-gateway-bridge
+LORA_SERVER_BROCAAR_NS = $(LORA_SERVER_BROCAAR_GITHUB)/$(LORA_SERVER_BROCAAR_N)
+LORA_SERVER_BROCAAR_AS = $(LORA_SERVER_BROCAAR_GITHUB)/$(LORA_SERVER_BROCAAR_A)
+LORA_SERVER_BROCAAR_BS = $(LORA_SERVER_BROCAAR_GITHUB)/$(LORA_SERVER_BROCAAR_B)
+LORA_SERVER_BROCAAR_SNS = src/$(LORA_SERVER_BROCAAR_NS)
+LORA_SERVER_BROCAAR_SAS = src/$(LORA_SERVER_BROCAAR_AS)
+LORA_SERVER_BROCAAR_SBS = src/$(LORA_SERVER_BROCAAR_BS)
+LORA_SERVER_BROCAAR_DR = $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar
 
 # Build the source
 define LORA_SERVER_BROCAAR_BUILD_CMDS
 	@echo "Brocaar Lora App Server : downloading"
-	@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u github.com/brocaar/lora-app-server || true
-	cd $(@D)/src/github.com/brocaar/lora-app-server && git checkout tags/$(LORA_SERVER_BROCAAR_APP_SERVER_VERSION)
-	cp $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/Makefile \
-		$(@D)/src/github.com/brocaar/lora-app-server/Makefile
-	@cd $(@D)/src/github.com/brocaar/lora-app-server/ui && $(NPM) install
+	@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u $(LORA_SERVER_BROCAAR_AS) || true
+	cd $(@D)/$(LORA_SERVER_BROCAAR_SAS) && git checkout tags/$(LORA_SERVER_BROCAAR_APP_SERV_VER)
+	cp $(LORA_SERVER_BROCAAR_DR)/Makefile $(@D)/$(LORA_SERVER_BROCAAR_SAS)/Makefile
+	@cd $(@D)/$(LORA_SERVER_BROCAAR_SAS)/ui && $(NPM) install
 
 	@echo "Brocaar Lora App Server : building requirements"
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make requirements \
-		ui-requirements -C $(@D)/src/github.com/brocaar/lora-app-server/
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make clean \
-		-C $(@D)/src/github.com/brocaar/lora-app-server/
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make api \
-		-C $(@D)/src/github.com/brocaar/lora-app-server/
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make test \
-		-C $(@D)/src/github.com/brocaar/lora-app-server/
-	@cd $(@D)/src/github.com/brocaar/lora-app-server/ui && $(NPM) run build
+	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make requirements ui-requirements -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
+	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make clean -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
+	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make api -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
+	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make test -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
+	@cd $(@D)/$(LORA_SERVER_BROCAAR_SAS)/ui && $(NPM) run build
 
 	@echo "Brocaar Lora App Server : building executable"
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin/linux_arm:$(@D)/bin \
-		GOOS=linux GOARCH=arm make -B build -C $(@D)/src/github.com/brocaar/lora-app-server/
+	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin/linux_arm:$(@D)/bin GOOS=linux GOARCH=arm make -B build -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
 
 	@echo "Brocaar Lora App Server : done"
 
 	@echo "Brocaar Lora Gateway Bridge : downloading"
-	@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u github.com/brocaar/lora-gateway-bridge || true
-	cd $(@D)/src/github.com/brocaar/lora-gateway-bridge && git checkout tags/$(LORA_SERVER_BROCAAR_BRIDGE_SERVER_VERSION)
+	@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u $(LORA_SERVER_BROCAAR_BS) || true
+	cd $(@D)/$(LORA_SERVER_BROCAAR_SBS) && git checkout tags/$(LORA_SERVER_BROCAAR_BRD_SERV_VER)
 
 	@echo "Brocaar Lora Gateway Bridge : building requirements"
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make requirements -C \
-		$(@D)/src/github.com/brocaar/lora-gateway-bridge/
+	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make requirements -C $(@D)/$(LORA_SERVER_BROCAAR_SBS)/
 
 	@echo "Brocaar Lora Gateway Bridge : building executable"
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin/linux_arm:$(@D)/bin \
-		GOOS=linux GOARCH=arm make build -C $(@D)/src/github.com/brocaar/lora-gateway-bridge/
+	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin/linux_arm:$(@D)/bin GOOS=linux GOARCH=arm make build -C $(@D)/$(LORA_SERVER_BROCAAR_SBS)/
 
 	@echo "Brocaar Lora Gateway Bridge : done"
 
 	@echo "Brocaar Lora Server : downloading"
-	@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u github.com/brocaar/loraserver || true
-	cd $(@D)/src/github.com/brocaar/loraserver && git checkout tags/$(LORA_SERVER_BROCAAR_NETWORK_SERVER_VERSION)
+	@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u $(LORA_SERVER_BROCAAR_NS) || true
+	cd $(@D)/$(LORA_SERVER_BROCAAR_SNS) && git checkout tags/$(LORA_SERVER_BROCAAR_NET_SERV_VER)
 
 	@echo "Brocaar Lora Server : building requirements"
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make requirements -C \
-		$(@D)/src/github.com/brocaar/loraserver/
+	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make requirements -C $(@D)/$(LORA_SERVER_BROCAAR_SNS)/
 
 	@echo "Brocaar Lora Server : building executable"
-	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin/linux_arm:$(@D)/bin \
-		GOOS=linux GOARCH=arm make build -C $(@D)/src/github.com/brocaar/loraserver/
+	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin/linux_arm:$(@D)/bin GOOS=linux GOARCH=arm make build -C $(@D)/$(LORA_SERVER_BROCAAR_SNS)/
 
 	@echo "Brocaar Lora Server : done"
 endef
 
 # Install the application into the rootfs file system
 define LORA_SERVER_BROCAAR_INSTALL_TARGET_CMDS
-	$(INSTALL) -D -m 0755 $(@D)/src/github.com/brocaar/lora-gateway-bridge/build/lora-gateway-bridge \
-		$(TARGET_DIR)/usr/bin/lora-gateway-bridge
-	$(INSTALL) -D -m 0755 $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/lora-gateway-bridge.toml \
-		$(TARGET_DIR)/etc/lora-gateway-bridge/lora-gateway-bridge.toml
+	$(INSTALL) -D -m 0755 $(@D)/$(LORA_SERVER_BROCAAR_SBS)/build/lora-gateway-bridge $(TARGET_DIR)/usr/bin/lora-gateway-bridge
+	$(INSTALL) -D -m 0755 $(LORA_SERVER_BROCAAR_DR)/lora-gateway-bridge.toml $(TARGET_DIR)/etc/lora-gateway-bridge/lora-gateway-bridge.toml
 
-	$(INSTALL) -D -m 0755 $(@D)/src/github.com/brocaar/loraserver/build/loraserver \
-		$(TARGET_DIR)/usr/bin/loraserver
-	$(INSTALL) -D -m 0755 $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/loraserver.toml \
-		$(TARGET_DIR)/etc/loraserver/loraserver.toml
+	$(INSTALL) -D -m 0755 $(@D)/$(LORA_SERVER_BROCAAR_SNS)/build/loraserver $(TARGET_DIR)/usr/bin/loraserver
+	$(INSTALL) -D -m 0755 $(LORA_SERVER_BROCAAR_DR)/loraserver.toml $(TARGET_DIR)/etc/loraserver/loraserver.toml
 
-	$(INSTALL) -D -m 0755 $(@D)/src/github.com/brocaar/lora-app-server/build/lora-app-server \
-		$(TARGET_DIR)/usr/bin/lora-app-server
-	$(INSTALL) -D -m 0755 $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/lora-app-server.toml \
-		$(TARGET_DIR)/etc/lora-app-server/lora-app-server.toml
+	$(INSTALL) -D -m 0755 $(@D)/$(LORA_SERVER_BROCAAR_SAS)/build/lora-app-server $(TARGET_DIR)/usr/bin/lora-app-server
+	$(INSTALL) -D -m 0755 $(LORA_SERVER_BROCAAR_DR)/lora-app-server.toml $(TARGET_DIR)/etc/lora-app-server/lora-app-server.toml
 endef
 
 define LORA_SERVER_BROCAAR_INSTALL_INIT_SYSV
-	$(INSTALL) -D -m 0755 $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/loraServer \
-		$(TARGET_DIR)/etc/init.d/S$(BR2_LORA_SERVER_BROCAAR_INIT_LVL)loraServer
-	$(INSTALL) -D -m 0755 $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/loraPostInitSetup \
-		$(TARGET_DIR)/etc/init.d/S99loraPostInitSetup
-	$(INSTALL) -D -m 0755 $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/loraServerInit \
-		$(TARGET_DIR)/usr/sbin/loraServer/loraServerInit
+	$(INSTALL) -D -m 0755 $(LORA_SERVER_BROCAAR_DR)/loraServer $(TARGET_DIR)/etc/init.d/S$(BR2_LORA_SERVER_BROCAAR_INIT_LVL)loraServer
+	$(INSTALL) -D -m 0755 $(LORA_SERVER_BROCAAR_DR)/loraPostInitSetup $(TARGET_DIR)/etc/init.d/S99loraPostInitSetup
+	$(INSTALL) -D -m 0755 $(LORA_SERVER_BROCAAR_DR)/loraServerInit $(TARGET_DIR)/usr/sbin/loraServer/loraServerInit
 endef
 
 
