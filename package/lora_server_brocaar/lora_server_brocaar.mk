@@ -11,10 +11,15 @@ LORA_SERVER_BROCAAR_DEPENDENCIES += postgresql
 LORA_SERVER_BROCAAR_DEPENDENCIES += host-go_fleet
 LORA_SERVER_BROCAAR_DEPENDENCIES += host-nodejs
 
+LORA_SERVER_BROCAAR_NETWORK_SERVER_VERSION = 0.25.1
+LORA_SERVER_BROCAAR_APP_SERVER_VERSION = 0.18.2
+LORA_SERVER_BROCAAR_BRIDGE_SERVER_VERSION = 2.3.2
+
 # Build the source
 define LORA_SERVER_BROCAAR_BUILD_CMDS
 	@echo "Brocaar Lora App Server : downloading"
 	@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u github.com/brocaar/lora-app-server || true
+	cd $(@D)/src/github.com/brocaar/lora-app-server && git checkout tags/$(LORA_SERVER_BROCAAR_APP_SERVER_VERSION)
 	cp $(BR2_EXTERNAL_PORTAL_PATH)/package/lora_server_brocaar/Makefile \
 		$(@D)/src/github.com/brocaar/lora-app-server/Makefile
 	@cd $(@D)/src/github.com/brocaar/lora-app-server/ui && $(NPM) install
@@ -38,6 +43,7 @@ define LORA_SERVER_BROCAAR_BUILD_CMDS
 
 	@echo "Brocaar Lora Gateway Bridge : downloading"
 	@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u github.com/brocaar/lora-gateway-bridge || true
+	cd $(@D)/src/github.com/brocaar/lora-gateway-bridge && git checkout tags/$(LORA_SERVER_BROCAAR_BRIDGE_SERVER_VERSION)
 
 	@echo "Brocaar Lora Gateway Bridge : building requirements"
 	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make requirements -C \
@@ -51,6 +57,7 @@ define LORA_SERVER_BROCAAR_BUILD_CMDS
 
 	@echo "Brocaar Lora Server : downloading"
 	@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u github.com/brocaar/loraserver || true
+	cd $(@D)/src/github.com/brocaar/loraserver && git checkout tags/$(LORA_SERVER_BROCAAR_NETWORK_SERVER_VERSION)
 
 	@echo "Brocaar Lora Server : building requirements"
 	GOPATH=$(@D) PATH=$(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin make requirements -C \
