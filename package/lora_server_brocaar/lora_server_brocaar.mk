@@ -33,6 +33,11 @@ LORA_SERVER_BROCAAR_PTH = $(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin:$(HOST_DIR
 define LORA_SERVER_BROCAAR_BUILD_CMDS
 	@echo "Brocaar Lora App Server : downloading"
 	@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u $(LORA_SERVER_BROCAAR_AS) || true
+	mkdir -p $(@D)/src/golang.org/x
+	# cd $(@D)/src/golang.org/x && git clone https://go.googlesource.com/tools
+	cd $(@D)/src/golang.org/x && git clone https://go.googlesource.com/lint
+	@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u golang.org/x/tools/... || true
+	@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u golang.org/x/lint/golint || true
 	cd $(@D)/$(LORA_SERVER_BROCAAR_SAS) && git checkout tags/$(LORA_SERVER_BROCAAR_APP_SERV_VER)
 	cp $(LORA_SERVER_BROCAAR_DR)/Makefile $(@D)/$(LORA_SERVER_BROCAAR_SAS)/Makefile
 	@cd $(@D)/$(LORA_SERVER_BROCAAR_SAS)/ui && $(NPM) install

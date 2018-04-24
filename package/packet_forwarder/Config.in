@@ -5,4 +5,13 @@ menuconfig BR2_PACKAGE_PACKET_FORWARDER
 	help
 		Packet Forwarder
 
+if BR2_PACKAGE_PACKET_FORWARDER
+	config BR2_PACKAGE_PACKET_FORWARDER_PIN_NUMBER
+		int "Hardware Pin Number for LoRa Packets"
+		default 17
+		range 1 99
+		depends on BR2_PACKAGE_LORAGATEWAY
+		help
+			LoRa Packets Hardware Pin Number
+endif
 
