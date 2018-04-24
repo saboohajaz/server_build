@@ -26,6 +26,7 @@ endef
 define PACKET_FORWARDER_INSTALL_TARGET_CMDS
 	mkdir -p $(TARGET_DIR)/usr/bin/packet_forwarder/ 
 	cp -R $(@D)/* $(TARGET_DIR)/usr/bin/packet_forwarder/
+	echo $(BR2_PACKAGE_PACKET_FORWARDER_PIN_NUMBER) > $(TARGET_DIR)/usr/bin/packet_forwarder/pin
 endef
 
 $(eval $(generic-package))

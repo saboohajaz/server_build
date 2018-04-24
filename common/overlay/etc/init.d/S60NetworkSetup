@@ -20,6 +20,7 @@ fi
 # Enable wlan0 if not running
 KernelVersion="$(uname -r)"
 reqsub='wlan0'
+serial="$(cat /proc/cpuinfo | grep Serial | cut -d ' ' -f 2)"
 if [ -z "${OUTPUT##*$reqsub*}" ] ;then
 	echo "Network Interface already UP: '$reqsub'"
 else
@@ -27,5 +28,7 @@ else
 	sleep 1
 	ifup wlan0
 	echo "Network Interface UP: '$reqsub'"
+	sed -i "s/NUMBER/$serial/g" /etc/hostapd.conf
+	hostapd -B /etc/hostapd.conf
 fi
 

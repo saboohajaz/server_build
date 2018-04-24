@@ -8,10 +8,10 @@ menuconfig BR2_PACKAGE_PACKET_FORWARDER
 if BR2_PACKAGE_PACKET_FORWARDER
 	config BR2_PACKAGE_PACKET_FORWARDER_PIN_NUMBER
 		int "Hardware Pin Number for LoRa Packets"
-		default 17
+		default 7
 		range 1 99
 		depends on BR2_PACKAGE_LORAGATEWAY
 		help
-			LoRa Packets Hardware Pin Number
+			7 (Rising HF), 17 (RAK systems), 25 (IMST)
 endif
 

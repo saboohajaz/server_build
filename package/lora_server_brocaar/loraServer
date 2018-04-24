@@ -4,6 +4,7 @@
 #
 
 NAME=lora-app-server
+PIN=`cat /usr/bin/packet_forwarder/pin`
 
 certificateHandling() {
 	echo "Certificate handler: "
@@ -58,7 +59,7 @@ start() {
 	echo "Portal services: "
 	mkdir -p /var/log/lora_gateway
 	mkdir -p /var/log/lora_pkt_fwd
-	/usr/bin/lora_gateway/reset_lgw.sh start 17
+	/usr/bin/lora_gateway/reset_lgw.sh start $PIN
 	/usr/bin/lora_gateway/libloragw/test_loragw_reg > /var/log/lora_gateway/lora_gateway
 	OUTPUT="$(ps | grep lora_pkt_fwd)"
 	reqsub='./lora_pkt_fwd'
