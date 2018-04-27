@@ -1,12 +1,28 @@
 NAME=$1
 DAEMON=/usr/bin/$NAME
 PID_FILE=/var/run/$NAME.pid
+LOG_DIR=/opt/log/$NAME
+
+
+logfile()
+{
+    suffix=0
+    file="$LOG_DIR/$NAME.log"
+    if [ -e "$file" ]
+    then
+        while test -e "$file"; do
+            file="$LOG_DIR/$NAME.log.$((++suffix))"
+        done
+        mv -v $LOG_DIR/$NAME.log "$file"
+    fi
+}
 
 case "$2" in
     start)
         echo "Starting ${NAME}: "
-        mkdir -p /var/log/$NAME
-        start-stop-daemon -S -q -m -b -p ${PID_FILE} -C -x  $DAEMON > /var/log/$NAME/$NAME.log 2>&1
+        mkdir -p $LOG_DIR
+        logfile
+        start-stop-daemon -S -q -m -b -p ${PID_FILE} -C -x  $DAEMON > $LOG_DIR/$NAME.log 2>&1
         rc=$?
         if [ $rc -eq 0 ]
         then
