@@ -1,0 +1,9 @@
+menuconfig BR2_PACKAGE_INMARSAT_BGAN
+	bool "Inmarsat BGAN"
+	default y
+	select BR2_PACKAGE_RP_PPPOE
+	select BR2_PACKAGE_PPPD
+	help
+		Driver for Inmarsat BGAN
+
+

@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# Inmarsat BGAN Driver
+#
+TIMEOUT=10
+
+Nodesetup()
+{
+	mknod /dev/ppp c 108 0
+	chmod 600 /dev/ppp
+	sync
+}
+
+Startup()
+{
+	Nodesetup
+	pon
+	timer=0
+	reqsub='ppp'
+	OUTPUT="$(ifconfig)"
+	while [ -n "${OUTPUT##*$reqsub*}" ] && [ $timer -le $TIMEOUT ]
+	do
+		sync
+		sleep 1
+		timer=$(( timer+1 ))
+		OUTPUT="$(ifconfig)"
+	done
+	if [ $timer -gt $TIMEOUT ]
+	then
+		return 1
+	fi
+}
+
+Stopoff()
+{
+	poff -a
+	sync
+}
+
+
+case "$1" in
+  start)
+	Startup
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	;;
+  stop)
+	Stopoff
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	;;
+  restart|reload)
+	Stopoff
+	Startup
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
+
+
+

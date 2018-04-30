@@ -1,0 +1,19 @@
+# Minimalistic default options file for DSL/PPPoE connections
+
+noipdefault
+defaultroute
+hide-password
+#lcp-echo-interval 30
+#lcp-echo-failure 4
+noauth
+persist
+#mtu 1492
+#persist
+#maxfail 0
+#holdoff 20
+plugin rp-pppoe.so eth0
+user "pivotel"
+usepeerdns
+
+rp_pppoe_service "XBB:AT+CGDCONT=1, ip, PIVOTEL-AUS.M2M.INMARSAT.COM"
+
