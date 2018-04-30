@@ -15,8 +15,8 @@ define INMARSAT_BGAN_INSTALL_TARGET_CMDS
 	mkdir -p $(TARGET_DIR)/etc/ppp/peers/
 	$(INSTALL) -D -m 0755 $(INMARSAT_BGAN_DR)/chap-secrets $(TARGET_DIR)/etc/ppp/
 	$(INSTALL) -D -m 0755 $(INMARSAT_BGAN_DR)/pap-secrets $(TARGET_DIR)/etc/ppp/
-	$(INSTALL) -D -m 0755 $(INMARSAT_BGAN_DR)/chap-secrets $(TARGET_DIR)/etc/ppp/
-	$(INSTALL) -D -m 0755 $(INMARSAT_BGAN_DR)/resolv.conf $(TARGET_DIR)/etc/ppp/peers/ 
+	$(INSTALL) -D -m 0755 $(INMARSAT_BGAN_DR)/resolv.conf $(TARGET_DIR)/etc/ppp/
+	$(INSTALL) -D -m 0755 $(INMARSAT_BGAN_DR)/provider $(TARGET_DIR)/etc/ppp/peers/ 
 endef
 
 $(eval $(generic-package))
