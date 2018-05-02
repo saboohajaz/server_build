@@ -7,14 +7,14 @@
 LORA_SERVER_BROCAAR_SITE_INSTALL_STAGING = YES
 LORA_SERVER_BROCAAR_DEPENDENCIES = mosquitto
 LORA_SERVER_BROCAAR_DEPENDENCIES += redis
-LORA_SERVER_BROCAAR_DEPENDENCIES += postgresql
+LORA_SERVER_BROCAAR_DEPENDENCIES += postgresql_fleet
 LORA_SERVER_BROCAAR_DEPENDENCIES += host-go_fleet
 LORA_SERVER_BROCAAR_DEPENDENCIES += host-nodejs
 LORA_SERVER_BROCAAR_DEPENDENCIES += host-protobuf
 
-LORA_SERVER_BROCAAR_NET_SERV_VER = 0.25.1
-LORA_SERVER_BROCAAR_APP_SERV_VER = 0.18.2
-LORA_SERVER_BROCAAR_BRD_SERV_VER = 2.3.2
+LORA_SERVER_BROCAAR_NET_SERV_VER = 0.26.1
+LORA_SERVER_BROCAAR_APP_SERV_VER = 0.20.1
+LORA_SERVER_BROCAAR_BRD_SERV_VER = 2.4.0
 
 LORA_SERVER_BROCAAR_GITHUB = github.com/brocaar
 LORA_SERVER_BROCAAR_N = loraserver
@@ -33,20 +33,18 @@ LORA_SERVER_BROCAAR_PTH = $(PATH):$(HOST_GO_FLEET_ROOT)/bin:$(@D)/bin:$(HOST_DIR
 define LORA_SERVER_BROCAAR_BUILD_CMDS
 	@echo "Brocaar Lora App Server : downloading"
 	@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u $(LORA_SERVER_BROCAAR_AS) || true
-	mkdir -p $(@D)/src/golang.org/x
-	# cd $(@D)/src/golang.org/x && git clone https://go.googlesource.com/tools
-	cd $(@D)/src/golang.org/x && git clone https://go.googlesource.com/lint
-	@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u golang.org/x/tools/... || true
-	@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u golang.org/x/lint/golint || true
+	#mkdir -p $(@D)/src/golang.org/x
+	#cd $(@D)/src/golang.org/x && rm -Rf lint && git clone https://go.googlesource.com/lint
+	#@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u golang.org/x/tools/... || true
+	#@GOPATH=$(@D) $(HOST_GO_FLEET_ROOT)/bin/go get -u golang.org/x/lint/golint || true
 	cd $(@D)/$(LORA_SERVER_BROCAAR_SAS) && git checkout tags/$(LORA_SERVER_BROCAAR_APP_SERV_VER)
 	cp $(LORA_SERVER_BROCAAR_DR)/Makefile $(@D)/$(LORA_SERVER_BROCAAR_SAS)/Makefile
 	@cd $(@D)/$(LORA_SERVER_BROCAAR_SAS)/ui && $(NPM) install
 
 	@echo "Brocaar Lora App Server : building requirements"
 	GOPATH=$(@D) PATH=$(LORA_SERVER_BROCAAR_PTH) make requirements ui-requirements -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
-	GOPATH=$(@D) PATH=$(LORA_SERVER_BROCAAR_PTH) make clean -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
-	GOPATH=$(@D) PATH=$(LORA_SERVER_BROCAAR_PTH) make api -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
-	GOPATH=$(@D) PATH=$(LORA_SERVER_BROCAAR_PTH) make test -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
+	#GOPATH=$(@D) PATH=$(LORA_SERVER_BROCAAR_PTH) make clean -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
+	#GOPATH=$(@D) PATH=$(LORA_SERVER_BROCAAR_PTH) make api -C $(@D)/$(LORA_SERVER_BROCAAR_SAS)/
 	@cd $(@D)/$(LORA_SERVER_BROCAAR_SAS)/ui && $(NPM) run build
 
 	@echo "Brocaar Lora App Server : building executable"

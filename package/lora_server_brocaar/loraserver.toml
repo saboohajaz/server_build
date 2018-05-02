@@ -38,6 +38,7 @@ log_level=4
 #dsn="postgres://localhost/loraserver_ns?sslmode=disable"
 dsn="postgres://loraserver_ns:dbpassword@localhost/loraserver_ns?sslmode=disable"
 
+
 # Automatically apply database migrations.
 #
 # It is possible to apply the database-migrations by hand
@@ -102,7 +103,7 @@ get_downlink_data_delay="100ms"
   # LoRaWAN band to use.
   #
   # Valid values are:
-  # *	AS_923
+  # * AS_923
   # * AU_915_928
   # * CN_470_510
   # * CN_779_787
@@ -112,10 +113,7 @@ get_downlink_data_delay="100ms"
   # * KR_920_923
   # * RU_864_870
   # * US_902_928
- # name="EU_863_870"
-name="AU_915_928"
-
-
+  name="EU_863_870"
 
   # Enforce 400ms dwell time
   #
@@ -250,25 +248,6 @@ name="AU_915_928"
   # tls key used by the api server (optional)
   tls_key=""
 
-  # Gateway API
-  # 
-  # This API is used by the LoRa Channel Manager component to fetch
-  # channel configuration.
-  [network_server.gateway.api]
-  # ip:port to bind the api server
-  bind="0.0.0.0:8002"
-
-  # CA certificate used by the api server (optional)
-  ca_cert=""
-
-  # tls certificate used by the api server (optional)
-  tls_cert=""
-
-  # tls key used by the api server (optional)
-  tls_key=""
-
-  # JWT secret used by the gateway api server for gateway authentication / authorization
-  jwt_secret="verysecret"
 
   # Gateway statistics settings.
   [network_server.gateway.stats]
@@ -294,7 +273,6 @@ name="AU_915_928"
   # When left empty, no statistics will be stored in the database.
   # Note, LoRa App Server expects at least "minute", "day", "hour"!
   aggregation_intervals=["minute", "hour", "day"]
-#aggregation_intervals=["minute", "hour", "day"]
 
 
   # MQTT gateway backend settings.
@@ -314,6 +292,7 @@ name="AU_915_928"
   downlink_topic_template="gateway/{{ .MAC }}/tx"
   stats_topic_template="gateway/+/stats"
   ack_topic_template="gateway/+/ack"
+  config_topic_template="gateway/{{ .MAC }}/config"
 
   # MQTT server (e.g. scheme://host:port where scheme is tcp, ssl or ws)
   server="tcp://localhost:1883"
@@ -392,3 +371,8 @@ tls_cert=""
 
 # tls key used by the network-controller client (optional)
 tls_key=""
+
+
+ # -- Note sure! JWT secret used by the gateway api server for gateway authentication / authorization
+    jwt_secret="verysecret"
+    

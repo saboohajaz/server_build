@@ -7,13 +7,14 @@ GOARCH ?= amd64
 build: ui/build internal/statics internal/migrations
 	@echo "Compiling source for $(GOOS) $(GOARCH)"
 	@mkdir -p build
-	@GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(GO_EXTRA_BUILD_ARGS) -ldflags "-s -w -X main.version=$(VERSION)" -o build/lora-app-server$(BINEXT) cmd/lora-app-server/main.go
+	@GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(GO_EXTRA_BUILD_ARGS) -ldflags "-s -w -X main.version=$(VERSION)" -o build/lora-app-server cmd/lora-app-server/main.go
 
 clean:
 	@echo "Cleaning up workspace"
 	@rm -rf build dist internal/migrations internal/static ui/build static/static
 	@rm -f static/index.html
 	@rm -rf docs/public
+	@rm -rf dist
 
 test: internal/statics internal/migrations
 	@echo "Running tests"
@@ -27,7 +28,13 @@ documentation:
 	@echo "Building documentation"
 	@mkdir -p dist/docs
 	@cd docs && hugo
-	@cd docs/public/ && tar -pczf ../../dist/docs/lora-app-server.tar.gz .
+	@cd docs/public/ && tar -pczf ../../dist/lora-app-server-documentation.tar.gz .
+
+dist: ui/build internal/statics internal/migrations
+	@goreleaser
+
+build-snapshot: ui/build internal/statics internal/migrations
+	@goreleaser --snapshot
 
 package: build
 	@echo "Creating package for $(GOOS) $(GOARCH)"
@@ -63,7 +70,7 @@ static/swagger/api.swagger.json:
 
 requirements:
 	@echo "Installing development tools"
-	# @go get -u golang.org/x/lint/golint
+	@go get -u github.com/golang/lint/golint
 	@go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
 	@go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 	@go get -u github.com/golang/protobuf/protoc-gen-go
@@ -73,6 +80,7 @@ requirements:
 	@go get -u github.com/smartystreets/goconvey
 	@go get -u golang.org/x/tools/cmd/stringer
 	@go get -u github.com/golang/dep/cmd/dep
+	@go get -u github.com/goreleaser/goreleaser
 	@dep ensure -v
 
 ui-requirements:

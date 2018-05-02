@@ -1,4 +1,5 @@
 source "$BR2_EXTERNAL_PORTAL_PATH/package/loragateway/Config.in"
 source "$BR2_EXTERNAL_PORTAL_PATH/package/packet_forwarder/Config.in"
 source "$BR2_EXTERNAL_PORTAL_PATH/package/lora_server_brocaar/Config.in"
+source "$BR2_EXTERNAL_PORTAL_PATH/package/postgresql_fleet/Config.in"
 

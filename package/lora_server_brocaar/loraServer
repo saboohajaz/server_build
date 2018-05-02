@@ -40,6 +40,7 @@ startDatabase() {
 	else
 		echo "Database doesn't Exists: '$reqsub'. Adding ..."
 		sudo -u postgres psql -c "create database loraserver_as with owner loraserver_as;"
+		sudo -u postgres psql -d loraserver_as -c "create extension pg_trgm;"
 	fi
 	reqsub='loraserver_ns'
 	if [ -z "${OUTPUT##*$reqsub*}" ] ;then

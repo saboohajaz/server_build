@@ -1,0 +1,53 @@
+#!/bin/sh
+
+INMARSAT_HOME=/opt/Inmarsat
+DATA_DIR=$INMARSAT_HOME/data/
+SERIAL=01
+SERVER=52.64.97.201
+TOPIC=Fleet/TWX/loradev$SERIAL/rx
+INTERVAL=10
+
+send_data()
+{
+	for i in $DATA_DIR* ;do
+		if [ -f "$i" ]
+		then
+			echo "$i"
+			DATA=`cat $i`
+			echo "$DATA"
+			mosquitto_pub -h $SERVER -t $TOPIC -u fleet -P Fleet123 -m $DATA -q 1
+			if [ $? == 0 ]; then
+				# Send successfully
+				rm $i
+				sync
+			else
+				# could NOT send
+				echo $i was NOT send yet. Kept for retry
+			fi
+		fi
+	done
+}
+
+connect()
+{
+	$INMARSAT_HOME/inmarsat_bgan_setup start
+	d=0
+	IP=`ip addr list ppp$d |grep inet |cut -d' ' -f6|cut -d/ -f1`
+	echo $IP
+}
+
+disconnect()
+{
+        $INMARSAT_HOME/inmarsat_bgan_setup stop
+}
+
+echo Server = $SERVER
+echo Topic = $TOPIC
+while [ 1 ];
+do
+	connect
+	send_data
+	disconnect
+	sleep $INTERVAL
+done
+

@@ -40,9 +40,7 @@ password_hash_iterations=100000
 # * verify-ca - Always SSL (verify that the certificate presented by the server was signed by a trusted CA)
 # * verify-full - Always SSL (verify that the certification presented by the server was signed by a trusted CA and the server host name matches the one in the certificate)
 #dsn="postgres://localhost/loraserver_as?sslmode=disable"
-
 dsn="postgres://loraserver_as:dbpassword@localhost/loraserver_as?sslmode=disable"
-
 
 
 # Automatically apply database migrations.
@@ -187,7 +185,7 @@ id="6d5db27e-4ce2-4b2b-b5d7-91f069397978"
 
   # JWT secret used for api authentication / authorization
   # You could generate this by executing 'openssl rand -base64 32' for example
-  jwt_secret="verysecret"
+  jwt_secret="asdsdsadasdafsdfdgfdsffdfsdfsdf"
 
   # when set, existing users can't be re-assigned (to avoid exposure of all users to an organization admin)"
   disable_assign_existing_users=false

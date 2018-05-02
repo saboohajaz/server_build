@@ -20,7 +20,7 @@ fi
 # Enable wlan0 if not running
 KernelVersion="$(uname -r)"
 reqsub='wlan0'
-serial="$(cat /proc/cpuinfo | grep Serial | cut -d ' ' -f 2)"
+serial="$(cat /proc/cpuinfo | grep Serial | cut -d ' ' -f 2 | sed 's/^0*//')"
 if [ -z "${OUTPUT##*$reqsub*}" ] ;then
 	echo "Network Interface already UP: '$reqsub'"
 else
