@@ -1,0 +1,20 @@
+#!/bin/sh
+
+INTERVAL=5
+DATA_DIR=/var/www
+FILE=$DATA_DIR/index.html
+
+log_data()
+{
+	mosquitto_sub -v -t "#" -u admin -P {admin} -h localhost -p 1883 >> $FILE
+}
+
+mkdir -p $DATA_DIR
+touch $FILE
+chmod 777 $FILE
+while [ 1 ];
+do
+	log_data
+	sleep $INTERVAL
+done
+
