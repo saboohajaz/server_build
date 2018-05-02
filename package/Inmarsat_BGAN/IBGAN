@@ -43,6 +43,7 @@ disconnect()
 
 echo Server = $SERVER
 echo Topic = $TOPIC
+mkdir -p $DATA_DIR
 while [ 1 ];
 do
 	connect
