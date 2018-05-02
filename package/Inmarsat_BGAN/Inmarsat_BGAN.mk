@@ -14,6 +14,7 @@ define INMARSAT_BGAN_INSTALL_TARGET_CMDS
 	$(INSTALL) -D -m 0755 $(INMARSAT_BGAN_DR)/inmarsat_bgan_setup $(TARGET_DIR)/opt/Inmarsat/ 
 	$(INSTALL) -D -m 0755 $(INMARSAT_BGAN_DR)/IBGAN $(TARGET_DIR)/opt/Inmarsat/ 
 	$(INSTALL) -D -m 0755 $(INMARSAT_BGAN_DR)/IBGAN_SEND $(TARGET_DIR)/usr/sbin/ 
+	$(INSTALL) -D -m 0755 $(INMARSAT_BGAN_DR)/IBGAN_service $(TARGET_DIR)/etc/init.d/S80IBGAN_service
 	mkdir -p $(TARGET_DIR)/etc/ppp/peers/
 	$(INSTALL) -D -m 0755 $(INMARSAT_BGAN_DR)/chap-secrets $(TARGET_DIR)/etc/ppp/
 	$(INSTALL) -D -m 0755 $(INMARSAT_BGAN_DR)/pap-secrets $(TARGET_DIR)/etc/ppp/

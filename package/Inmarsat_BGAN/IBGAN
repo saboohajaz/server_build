@@ -38,7 +38,7 @@ connect()
 
 disconnect()
 {
-        $INMARSAT_HOME/inmarsat_bgan_setup stop
+	$INMARSAT_HOME/inmarsat_bgan_setup stop
 }
 
 echo Server = $SERVER
