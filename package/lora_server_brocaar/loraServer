@@ -15,6 +15,11 @@ certificateHandling() {
 	fi
 }
 
+settime()
+{
+	date -s "2018-05-02 01:02:03"
+}
+
 startDatabase() {
 	echo "Starting Postgres Database: "
 	OUTPUT="$(sudo -u postgres psql -c "\du")"
@@ -52,23 +57,41 @@ startDatabase() {
 
 	echo "Database Setup Done"
 }
+
+logfile()
+{
+    suffix=0
+    file="$1/$2"
+    if [ -e "$file" ]
+    then
+        while test -e "$file"; do
+            file="$1/$2.log.$((++suffix))"
+        done
+        mv -v $1/$2.log "$file"
+    fi
+}
+
+
 start() {
 	echo "Starting Portal Services: "
 	startDatabase
 	echo "Certificates: "
 	certificateHandling
 	echo "Portal services: "
-	mkdir -p /var/log/lora_gateway
-	mkdir -p /var/log/lora_pkt_fwd
+	mkdir -p /opt/log/lora_gateway
+	mkdir -p /opt/log/lora_pkt_fwd
+	logfile /opt/log/lora_pkt_fwd lora_pkt_fwd.log
+	logfile /opt/log/lora_gateway lora_gateway.log
+
 	/usr/bin/lora_gateway/reset_lgw.sh start $PIN
-	/usr/bin/lora_gateway/libloragw/test_loragw_reg > /var/log/lora_gateway/lora_gateway
+	/usr/bin/lora_gateway/libloragw/test_loragw_reg > /opt/log/lora_gateway/lora_gateway.log
 	OUTPUT="$(ps | grep lora_pkt_fwd)"
 	reqsub='./lora_pkt_fwd'
 	i="0"
 	while [ -n "${OUTPUT##*$reqsub*}" ] && [  $i -lt 10 ]
 	do
 		echo "$i  Process not running: '$reqsub'. Starting ..."
-		cd /usr/bin/packet_forwarder/lora_pkt_fwd && ./lora_pkt_fwd > /var/log/lora_pkt_fwd/lora_pkt_fwd.log 2>&1 &
+		cd /usr/bin/packet_forwarder/lora_pkt_fwd && ./lora_pkt_fwd > /opt/log/lora_pkt_fwd/lora_pkt_fwd.log 2>&1 &
 		let i=i+1
 		sleep 1
 		OUTPUT="$(ps | grep lora_pkt_fwd)"

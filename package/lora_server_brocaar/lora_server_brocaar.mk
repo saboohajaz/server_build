@@ -87,6 +87,8 @@ define LORA_SERVER_BROCAAR_INSTALL_TARGET_CMDS
 
 	$(INSTALL) -D -m 0755 $(@D)/$(LORA_SERVER_BROCAAR_SAS)/build/lora-app-server $(TARGET_DIR)/usr/bin/lora-app-server
 	$(INSTALL) -D -m 0755 $(LORA_SERVER_BROCAAR_DR)/lora-app-server.toml $(TARGET_DIR)/etc/lora-app-server/lora-app-server.toml
+	mkdir -p $(TARGET_DIR)/usr/sbin/loraServer
+	date "+%Y-%m-%d %H:%M:%S" > $(TARGET_DIR)/usr/sbin/loraServer/buildtime
 endef
 
 define LORA_SERVER_BROCAAR_INSTALL_INIT_SYSV
