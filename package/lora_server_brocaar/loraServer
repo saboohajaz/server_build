@@ -17,8 +17,14 @@ certificateHandling() {
 
 settime()
 {
-	DATE=`cat /usr/sbin/loraServer/buildtime`
-	date -s "$DATE"
+	CURR=`date`
+	reqsub='1970'
+	if [ -n "${CURR##*$reqsub*}" ] ;then
+		echo "Time set"
+	else
+		DATE=`cat /usr/sbin/loraServer/buildtime`
+		date -s "$DATE"
+	fi
 }
 
 startDatabase() {
@@ -74,6 +80,7 @@ logfile()
 
 
 start() {
+	settime
 	echo "Starting Portal Services: "
 	startDatabase
 	echo "Certificates: "
