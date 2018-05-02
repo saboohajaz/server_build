@@ -17,7 +17,8 @@ certificateHandling() {
 
 settime()
 {
-	date -s "2018-05-02 01:02:03"
+	DATE=`cat /usr/sbin/loraServer/buildtime`
+	date -s "$DATE"
 }
 
 startDatabase() {
