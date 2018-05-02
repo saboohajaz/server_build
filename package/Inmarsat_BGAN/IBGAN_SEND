@@ -1,0 +1,17 @@
+#!/bin/sh
+
+INMARSAT_HOME=/opt/Inmarsat
+DATA_DIR=$INMARSAT_HOME/data/
+
+SetData()
+{
+    file="0"
+    while test -e "$DATA_DIR/$file"; do
+        file=$((file + 1))
+    done
+	echo $file
+	echo $1 > $DATA_DIR/$file
+}
+
+SetData $1
+
