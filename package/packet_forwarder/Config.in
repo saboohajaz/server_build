@@ -13,5 +13,29 @@ if BR2_PACKAGE_PACKET_FORWARDER
 		depends on BR2_PACKAGE_LORAGATEWAY
 		help
 			7 (Rising HF), 17 (RAK systems), 25 (IMST)
+
+	choice
+		prompt "Target Region"
+		default BR2_PACKAGE_PACKET_FORWARDER_AUS
+		help
+		  Select the target region build for.
+
+	config BR2_PACKAGE_PACKET_FORWARDER_AUS
+		bool "Australia Region"
+		help
+		  Australian frequencies and power setup.
+
+	config BR2_PACKAGE_PACKET_FORWARDER_EU
+		bool "European Region"
+		help
+		  European frequencies and power setup.
+
+	config BR2_PACKAGE_PACKET_FORWARDER_US
+		bool "US Region"
+		help
+		  US frequencies and power setup.
+
+	endchoice
+
 endif
 

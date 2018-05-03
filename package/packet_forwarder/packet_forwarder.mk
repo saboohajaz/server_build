@@ -11,6 +11,20 @@ PACKET_FORWARDER_DEPENDENCIES = loragateway
 PACKET_FORWARDER_OLD_ID := AA555A0000000000
 PACKET_FORWARDER_DR = $(BR2_EXTERNAL_PORTAL_PATH)/package/packet_forwarder
 
+
+ifeq ($(BR2_PACKAGE_PACKET_FORWARDER_AUS),y)
+PACKET_FORWARDER_CONFIGFILE = global_conf.json.AUS
+else
+ifeq ($(BR2_PACKAGE_PACKET_FORWARDER_EU),y)
+PACKET_FORWARDER_CONFIGFILE = global_conf.json.EU
+else
+ifeq ($(BR2_PACKAGE_PACKET_FORWARDER_US),y)
+PACKET_FORWARDER_CONFIGFILE = global_conf.json.US
+endif
+PACKET_FORWARDER_CONFIGFILE = Error
+endif
+endif
+
 # Build the source
 define PACKET_FORWARDER_BUILD_CMDS
 	make CROSS_COMPILE=$(TARGET_CROSS) ARCH=armv7l -C $(@D)
@@ -18,7 +32,7 @@ define PACKET_FORWARDER_BUILD_CMDS
 	$(eval PACKET_FORWARDER_ID := $(shell grep -Po '"gateway_ID":.*?[^\\]"*?[^\\]"' $(@D)/lora_pkt_fwd/local_conf.json|cut -d'"' -f4))
 	$(INSTALL) -D -m 0766 $(BR2_EXTERNAL_PORTAL_PATH)/package/packet_forwarder/global_conf.json.AUS \
 		$(@D)/lora_pkt_fwd/cfg/global_conf.json.AUS
-	$(INSTALL) -D -m 0766 $(BR2_EXTERNAL_PORTAL_PATH)/package/packet_forwarder/global_conf.json.AUS \
+	$(INSTALL) -D -m 0766 $(BR2_EXTERNAL_PORTAL_PATH)/package/packet_forwarder/$(PACKET_FORWARDER_CONFIGFILE) \
 		$(@D)/lora_pkt_fwd/global_conf.json
 	sed -i 's/$(PACKET_FORWARDER_OLD_ID)/$(PACKET_FORWARDER_ID)/g' $(@D)/lora_pkt_fwd/global_conf.json
 	sed -i 's/$(PACKET_FORWARDER_OLD_ID)/$(PACKET_FORWARDER_ID)/g' $(@D)/lora_pkt_fwd/cfg/*
