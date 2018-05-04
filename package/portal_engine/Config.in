@@ -1,0 +1,7 @@
+menuconfig BR2_PACKAGE_PORTAL_ENGINE
+	bool "Portal Engine"
+	default y
+	help
+		Portal Engine
+
+
