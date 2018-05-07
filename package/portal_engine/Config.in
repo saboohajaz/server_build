@@ -1,0 +1,10 @@
+menuconfig BR2_PACKAGE_PORTAL_ENGINE
+	bool "Portal Engine"
+	default y
+	select BR2_PACKAGE_HOST_GO_FLEET_ARCH_SUPPORTS
+	select BR2_PACKAGE_HOST_GO_CGO_LINKING_SUPPORTS
+	select BR2_PACKAGE_LORA_SERVER_BROCAAR
+	help
+		Portal Engine
+
+

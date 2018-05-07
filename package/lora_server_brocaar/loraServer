@@ -72,10 +72,47 @@ logfile()
     if [ -e "$file" ]
     then
         while test -e "$file"; do
-            file="$1/$2.log.$((++suffix))"
+            file="$1/$2.$((++suffix))"
         done
-        mv -v $1/$2.log "$file"
+        mv -v $1/$2 "$file"
     fi
+}
+
+res=0
+GWDIR=/opt/log/lora_gateway
+GWFILE=$GWDIR/lora_gateway.log
+PFDIR=/opt/log/lora_pkt_fwd
+PFFILE=$PFDIR/lora_pkt_fwd.log
+
+check_concentrator()
+{
+	res=1
+	cat $GWFILE | grep "ERROR: CONCENTRATOR"  > /dev/null
+	if [ $? -eq 0 ]; then
+		res=0
+	else
+		cat $GWFILE | grep "197 (should be 197)" > /dev/null
+		if [ $? -eq 0 ]; then
+			cat $GWFILE | grep "11 (should be 11)" > /dev/null
+			if [ $? -eq 0 ]; then
+				cat $GWFILE | grep "49253 (should be 49253)" > /dev/null
+				if [ $? -eq 0 ]; then
+					cat $GWFILE | grep "3173 (should be 3173)" > /dev/null
+					if [ $? -eq 0 ]; then
+						echo "Concentrator Good" > $PFFILE
+					else
+						res=0
+					fi
+				else
+					res=0
+				fi
+			else
+				res=0
+			fi
+		else
+			res=0
+		fi
+	fi
 }
 
 
@@ -86,24 +123,44 @@ start() {
 	echo "Certificates: "
 	certificateHandling
 	echo "Portal services: "
-	mkdir -p /opt/log/lora_gateway
-	mkdir -p /opt/log/lora_pkt_fwd
-	logfile /opt/log/lora_pkt_fwd lora_pkt_fwd.log
-	logfile /opt/log/lora_gateway lora_gateway.log
+	mkdir -p $GWDIR
+	mkdir -p $PFDIR
+	logfile $PFDIR lora_pkt_fwd.log
+	logfile $GWDIR lora_gateway.log
 
 	/usr/bin/lora_gateway/reset_lgw.sh start $PIN
-	/usr/bin/lora_gateway/libloragw/test_loragw_reg > /opt/log/lora_gateway/lora_gateway.log
-	OUTPUT="$(ps | grep lora_pkt_fwd)"
-	reqsub='./lora_pkt_fwd'
-	i="0"
-	while [ -n "${OUTPUT##*$reqsub*}" ] && [  $i -lt 10 ]
-	do
-		echo "$i  Process not running: '$reqsub'. Starting ..."
-		cd /usr/bin/packet_forwarder/lora_pkt_fwd && ./lora_pkt_fwd > /opt/log/lora_pkt_fwd/lora_pkt_fwd.log 2>&1 &
-		let i=i+1
-		sleep 1
+	/usr/bin/lora_gateway/libloragw/test_loragw_reg > $GWFILE
+
+	# check if concentrator connected and correct pin was used
+	check_concentrator
+
+	# check for alternative pin
+	if [ $res -eq 0 ]; then
+		for u in 7 17 25  
+		do  
+			logfile $GWDIR lora_gateway.log
+			/usr/bin/lora_gateway/reset_lgw.sh start $u
+			/usr/bin/lora_gateway/libloragw/test_loragw_reg > $GWFILE
+			check_concentrator
+			if [ $res -eq 1 ]; then
+				break;
+			fi
+		done		
+	fi
+
+	if [ $res -eq 1 ]; then
 		OUTPUT="$(ps | grep lora_pkt_fwd)"
-	done
+		reqsub='./lora_pkt_fwd'
+		i="0"
+		while [ -n "${OUTPUT##*$reqsub*}" ] && [  $i -lt 10 ]
+		do
+			echo "$i  Process not running: '$reqsub'. Starting ..."
+			cd /usr/bin/packet_forwarder/lora_pkt_fwd && ./lora_pkt_fwd > $PFFILE 2>&1 &
+			let i=i+1
+			sleep 1
+			OUTPUT="$(ps | grep lora_pkt_fwd)"
+		done
+	fi
 
 	/usr/sbin/loraServer/loraServerInit lora-gateway-bridge start
 	/usr/sbin/loraServer/loraServerInit loraserver start

@@ -13,5 +13,6 @@ SetData()
 	echo $1 > $DATA_DIR/$file
 }
 
+mkdir -p $DATA_DIR
 SetData $1
 
